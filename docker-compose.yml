@@ -1,0 +1,12 @@
+services:
+  mysql:
+    image: mysql:8.4
+    container_name: spring-boot-jobs-mysql
+    restart: always
+    environment:
+        MYSQL_ROOT_PASSWORD: root
+        MYSQL_DATABASE: jobs
+        MYSQL_USER: user
+        MYSQL_PASSWORD: 1234
+    ports:
+      - "3306:3306"
