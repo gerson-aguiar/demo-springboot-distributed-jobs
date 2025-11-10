@@ -29,6 +29,10 @@ public class JobExecutionTracker {
     @Column(name = "last_updated_by", nullable = false)
     private String lastUpdatedBy;
 
+
+    @Version
+    private long version;
+
     protected JobExecutionTracker() {
         // JPA
     }
@@ -43,6 +47,8 @@ public class JobExecutionTracker {
     public Long getId() {
         return id;
     }
+
+    public Long getVersion() { return version;}
 
     public String getJobName() {
         return jobName;

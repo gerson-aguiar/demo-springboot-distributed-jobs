@@ -1,6 +1,7 @@
 package com.demo.distributed.jobs.service;
 
 import com.demo.distributed.jobs.entity.JobExecutionTracker;
+import com.demo.distributed.jobs.infra.InstanceInfoService;
 import com.demo.distributed.jobs.repository.JobExecutionTrackerRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,16 +19,24 @@ public class JobExecutionTrackerService {
     private final JobExecutionTrackerRepository jobExecutionTrackerRepository;
     private final Clock clock;
     private final String instanceId;
+    private final InstanceInfoService instanceInfoService;
 
-    public JobExecutionTrackerService(JobExecutionTrackerRepository jobExecutionTrackerRepository) {
+    public JobExecutionTrackerService(
+            JobExecutionTrackerRepository jobExecutionTrackerRepository,
+            InstanceInfoService instanceInfoService
+    ) {
         this.jobExecutionTrackerRepository = jobExecutionTrackerRepository;
         this.clock = Clock.systemUTC();
         this.instanceId = ManagementFactory.getRuntimeMXBean().getName();
+
+        this.instanceInfoService = instanceInfoService;
     }
 
     @Transactional
-    public JobExecutionTracker registerExecution(String jobName) {
+    public JobExecutionTracker registerExecution(String jobName)
+    {
         Instant now = clock.instant();
+
 
         JobExecutionTracker tracker = jobExecutionTrackerRepository
                 .findByJobName(jobName)
@@ -36,6 +45,14 @@ public class JobExecutionTrackerService {
                 ));
 
         tracker.markExecuted(now, instanceId);
+
+
+        try {
+            int delay = instanceInfoService.getPort() == 8080 ? 5000 : 100;
+            Thread.sleep(delay);
+        } catch (InterruptedException e) {
+            log.error("Failed to wait for job execution", e);
+        }
 
         JobExecutionTracker updated = jobExecutionTrackerRepository.save(tracker);
 
