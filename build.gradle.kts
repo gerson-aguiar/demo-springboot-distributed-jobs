@@ -23,6 +23,15 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-web")
 	implementation("net.javacrumbs.shedlock:shedlock-spring:5.15.0")
 	implementation("net.javacrumbs.shedlock:shedlock-provider-jdbc-template:5.15.0")
+
+	// Redis
+	implementation("org.springframework.boot:spring-boot-starter-data-redis")
+
+	// ShedLock Core + Spring + Redis
+	// implementation("net.javacrumbs.shedlock:shedlock-core:5.15.0")
+	implementation("net.javacrumbs.shedlock:shedlock-provider-redis-spring:5.15.0")
+
+
 	developmentOnly("org.springframework.boot:spring-boot-devtools")
 	runtimeOnly("com.mysql:mysql-connector-j")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
